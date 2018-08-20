@@ -1,7 +1,10 @@
-#include "ArduinoTimer.h"
+#include "ArduinoSystemClock.h"
+#include "Timer.h"
 #include "Clock.h"
 
-ArduinoTimer timer;
+
+ArduinoSystemClock systemClock;
+ranetos::Timer timer(systemClock);
 Clock myClock(timer);
 
 void setup() {
