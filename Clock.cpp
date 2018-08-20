@@ -6,7 +6,6 @@
  */
 
 #include "Clock.h"
-#include "Arduino.h"
 
 void Clock::work() {
   if (timer.timedOut()) {
@@ -16,11 +15,7 @@ void Clock::work() {
         hour.increaseCount();
       }
     }
-    Serial.print(hour.getTimeCount());
-    Serial.print(":");
-    Serial.print(minute.getTimeCount());
-    Serial.print(":");
-    Serial.println(second.getTimeCount());
+    clockOutput.show(hour.getTimeCount(), minute.getTimeCount(), second.getTimeCount());
   }
 }
 
