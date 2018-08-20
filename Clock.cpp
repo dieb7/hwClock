@@ -11,20 +11,16 @@
 void Clock::work() {
   if (timer.timedOut()) {
     timer.start();
-    if (++second > 59) {
-      second = 0;
-      if (++minute > 59) {
-        minute = 0;
-        if (++hour > 23) {
-          hour = 0;
-        }
+    if (second.increaseCount()) {
+      if (minute.increaseCount()) {
+        hour.increaseCount();
       }
     }
-    Serial.print(hour);
+    Serial.print(hour.getTimeCount());
     Serial.print(":");
-    Serial.print(minute);
+    Serial.print(minute.getTimeCount());
     Serial.print(":");
-    Serial.println(second);
+    Serial.println(second.getTimeCount());
   }
 }
 

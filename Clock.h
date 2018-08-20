@@ -10,17 +10,18 @@
 
 #include <ITask.h>
 #include <ITimer.h>
+#include "TimeCounter.h"
 
 class Clock: public ranetos::ITask {
   ranetos::ITimer & timer;
-  unsigned char hour;
-  unsigned char minute;
-  unsigned char second;
+  TimeCounter hour;
+  TimeCounter minute;
+  TimeCounter second;
 public:
   Clock(ranetos::ITimer & timer): timer(timer) {
-    hour = 0;  
-    minute = 0;
-    second = 0;
+    hour.setLimit(23);
+    minute.setLimit(59);
+    second.setLimit(59);
     timer.setTimeOut(1000);
     timer.start();
   }
