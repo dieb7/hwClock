@@ -11,6 +11,9 @@ PROJECT_HOME_DIR = .
 ifeq "$(CPPUTEST_HOME)" ""
     CPPUTEST_HOME = ../CppUTest
 endif
+ifeq "$(RANETOS_HOME)" ""
+    RANETOS_HOME = ../ranetos
+endif
 CPP_PLATFORM = Gcc
 
 SRC_DIRS = .
@@ -25,7 +28,8 @@ INCLUDE_DIRS =\
   .\
   $(CPPUTEST_HOME)/include/ \
   $(CPPUTEST_HOME)/include/Platforms/Gcc\
-  mocks
+  mocks \
+  $(RANETOS_HOME)
 
 CPPUTEST_WARNINGFLAGS = -Wall -Werror -Wswitch-default 
 CPPUTEST_WARNINGFLAGS += -Wconversion -Wswitch-enum 
