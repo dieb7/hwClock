@@ -16,20 +16,25 @@ ifeq "$(RANETOS_HOME)" ""
 endif
 CPP_PLATFORM = Gcc
 
-SRC_DIRS = .
+SRC_DIRS = \
+	.\
+	$(RANETOS_HOME)
 # to pick specific files (rather than directories) use this:    
 SRC_FILES = 
 
 TEST_SRC_DIRS = tests
 
-MOCKS_SRC_DIRS = mocks
+MOCKS_SRC_DIRS = \
+	mocks\
+	$(RANETOS_HOME)/mocks
 
 INCLUDE_DIRS =\
   .\
   $(CPPUTEST_HOME)/include/ \
   $(CPPUTEST_HOME)/include/Platforms/Gcc\
   mocks \
-  $(RANETOS_HOME)
+  $(RANETOS_HOME)\
+  $(RANETOS_HOME)/mocks
 
 CPPUTEST_WARNINGFLAGS = -Wall -Werror -Wswitch-default 
 CPPUTEST_WARNINGFLAGS += -Wconversion -Wswitch-enum 

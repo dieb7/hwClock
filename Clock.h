@@ -12,25 +12,35 @@
 #include <Timer.h>
 #include "ISystemClock.h"
 #include "TimeCounter.h"
-#include "ClockOutput.h"
 
 class Clock: public ranetos::ITask {
-  ranetos::Timer & timer;
-  ClockOutput clockOutput;
-  TimeCounter hour;
-  TimeCounter minute;
-  TimeCounter second;
+	ranetos::Timer & timer;
+	TimeCounter hour;
+	TimeCounter minute;
+	TimeCounter second;
 public:
-  Clock(ranetos::Timer & timer, ClockOutput & clockOuput): timer(timer), clockOutput(clockOutput) {
-    hour.setLimit(23);
-    minute.setLimit(59);
-    second.setLimit(59);
-    timer.setTimeOut(1000);
-    timer.start();
-  }
-  virtual ~Clock() {}
+	Clock(ranetos::Timer & timer): timer(timer) {
+		hour.setLimit(23);
+		minute.setLimit(59);
+		second.setLimit(59);
+		timer.setTimeOut(1000);
+		timer.start();
+	}
+	virtual ~Clock() {}
 
-  virtual void work();
+	unsigned char currentHour() {
+		return hour.getTimeCount();
+	}
+
+	unsigned char currentMinute() {
+		return minute.getTimeCount();
+	}
+
+	unsigned char currentSecond() {
+		return second.getTimeCount();
+	}
+
+	void work();
 };
 
 #endif /* CLOCK_H_ */
