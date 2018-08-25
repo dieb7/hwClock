@@ -1,24 +1,25 @@
 /*
- * ClockOutput.h
+ * LedBinaryClockOutput.h
  *
  *  Created on: Aug 19, 2018
  *      Author: diebm
  */
 
-#ifndef CLOCKOUTPUT_H_
-#define CLOCKOUTPUT_H_
+#ifndef LEDBINARYCLOCKOUTPUT_H_
+#define LEDBINARYCLOCKOUTPUT_H_
 
+#include "IClockOutput.h"
 #include "IGpio.h"
 
-class ClockOutput {
+class LedBinaryClockOutput: public IClockOutput {
   void displayValue(unsigned char value);
 
   ranetos::IGpio * hourGpios[5];
   ranetos::IGpio * minuteGpios[6];
   
 public:
-  ClockOutput() {}
-  virtual ~ClockOutput() {}
+  LedBinaryClockOutput() {}
+  virtual ~LedBinaryClockOutput() {}
   
   void setHourGpio(ranetos::IGpio *hourGpio, unsigned char index) {
     if (index < 5) {
@@ -37,5 +38,5 @@ public:
   void show(unsigned char hour, unsigned char minute, unsigned char second);
 };
 
-#endif /* CLOCKOUTPUT_H_ */
+#endif /* LEDBINARYCLOCKOUTPUT_H_ */
 

@@ -1,16 +1,17 @@
 #include "ArduinoSystemClock.h"
 #include "Timer.h"
-#include "ClockOutput.h"
+#include "ledBinaryClockOutput.h"
 #include "Clock.h"
 #include "ArduinoGpio.h"
 #include "DebounceGpio.h"
 #include "OneShotGpio.h"
-
+#include "ClockTimeAdjuster.h"
 
 ArduinoSystemClock systemClock;
 ranetos::Timer timer(systemClock);
-ClockOutput clockOutput;
+LedBinaryClockOutput clockOutput;
 Clock myClock(timer);
+ClockTimeAdjuster timeAdjuster;
 
 ArduinoGpio hourGpio0(A0, true);
 ArduinoGpio hourGpio1(A1, true);
@@ -35,10 +36,7 @@ ranetos::Timer debounceDelayMinute(systemClock);
 ranetos::DebounceGpio minuteIncrementDebounce(minuteIncrementGpio, debounceDelayMinute, 80);
 ranetos::OneShotGpio minuteIncrement(minuteIncrementDebounce);
 
-void setup() {
-  hourGpio0.setOutput(true);
-  hourGpio1.setOutput(true);
-  
+void setup() {  
   clockOutput.setHourGpio(&hourGpio0, 4);
   clockOutput.setHourGpio(&hourGpio1, 3);
   clockOutput.setHourGpio(&hourGpio2, 2);
@@ -51,22 +49,15 @@ void setup() {
   clockOutput.setMinuteGpio(&minuteGpio3, 2);
   clockOutput.setMinuteGpio(&minuteGpio4, 1);
   clockOutput.setMinuteGpio(&minuteGpio5, 0);
+
+  myClock.setOutput(&clockOutput);
+
+  timeAdjuster.setIncrementHourButton(&hourIncrement);
+  timeAdjuster.setIncrementMinuteButton(&minuteIncrement);
+  timeAdjuster.setClock(&myClock);
 }
 
 void loop() {
   myClock.work();
-
-  if (hourIncrement.isOn()) {
-    myClock.incrementHour();
-  }
-
-  if (minuteIncrement.isOn()) {
-    myClock.incrementMinute();;
-  }
-  
-  unsigned char hour = myClock.currentHour();
-  unsigned char minute = myClock.currentMinute();
-  unsigned char second = myClock.currentSecond();
-
-  clockOutput.show(hour, minute, second);
+  timeAdjuster.work();
 }
