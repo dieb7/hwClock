@@ -15,12 +15,7 @@ void ClockOutput::displayValue(unsigned char value) {
 }
 
 void ClockOutput::show(unsigned char hour, unsigned char minute, unsigned char second) {
-  for (int i = 0; i < 3; i++) {
-    unsigned char mask = 1 << i;
-    hourGpios[i]->setOn(bool(hour & mask) > 0);
-  }
-
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 5; i++) {
     unsigned char mask = 1 << i;
     hourGpios[i]->setOn(bool(hour & mask) > 0);
   }

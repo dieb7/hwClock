@@ -13,7 +13,7 @@
 class ClockOutput {
   void displayValue(unsigned char value);
 
-  ranetos::IGpio * hourGpios[3];
+  ranetos::IGpio * hourGpios[5];
   ranetos::IGpio * minuteGpios[6];
   
 public:
@@ -21,7 +21,7 @@ public:
   virtual ~ClockOutput() {}
   
   void setHourGpio(ranetos::IGpio *hourGpio, unsigned char index) {
-    if (index < 3) {
+    if (index < 5) {
       this->hourGpios[index] = hourGpio;
     }
   }
