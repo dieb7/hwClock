@@ -3,7 +3,8 @@
 #include "ClockOutput.h"
 #include "Clock.h"
 #include "ArduinoGpio.h"
-#include "GpioDebouncer.h"
+#include "DebounceGpio.h"
+#include "OneShotGpio.h"
 
 
 ArduinoSystemClock systemClock;
@@ -25,16 +26,14 @@ ArduinoGpio minuteGpio4(9, true);
 ArduinoGpio minuteGpio5(10, true);
 
 ArduinoGpio hourIncrementGpio(11, false);
-ArduinoGpio minuteIncrementGpio(12, false);
-
 ranetos::Timer debounceDelayHour(systemClock);
-ranetos::GpioDebouncer hourIncrement(hourIncrementGpio, debounceDelayHour, 50);
+ranetos::DebounceGpio hourIncrementDebounce(hourIncrementGpio, debounceDelayHour, 80);
+ranetos::OneShotGpio hourIncrement(hourIncrementDebounce);
 
+ArduinoGpio minuteIncrementGpio(12, false);
 ranetos::Timer debounceDelayMinute(systemClock);
-ranetos::GpioDebouncer minuteIncrement(minuteIncrementGpio, debounceDelayMinute, 50);
-
-bool incrementingHour = false;
-bool incrementingMinute = false;
+ranetos::DebounceGpio minuteIncrementDebounce(minuteIncrementGpio, debounceDelayMinute, 80);
+ranetos::OneShotGpio minuteIncrement(minuteIncrementDebounce);
 
 void setup() {
   hourGpio0.setOutput(true);
@@ -58,21 +57,11 @@ void loop() {
   myClock.work();
 
   if (hourIncrement.isOn()) {
-    if (!incrementingHour) {
-      myClock.incrementHour();
-      incrementingHour = true;
-    }
-  } else {
-    incrementingHour = false;
+    myClock.incrementHour();
   }
 
   if (minuteIncrement.isOn()) {
-    if (!incrementingMinute) {
-      myClock.incrementMinute();
-      incrementingMinute = true;
-    }
-  } else {
-    incrementingMinute = false;
+    myClock.incrementMinute();;
   }
   
   unsigned char hour = myClock.currentHour();
