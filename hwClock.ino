@@ -6,6 +6,7 @@
 #include "DebounceGpio.h"
 #include "OneShotGpio.h"
 #include "ClockTimeAdjuster.h"
+#include "TomateTimer.h"
 
 ArduinoSystemClock systemClock;
 ranetos::Timer timer(systemClock);
@@ -15,7 +16,7 @@ ClockTimeAdjuster timeAdjuster;
 
 ArduinoGpio hourGpio0(A0, true);
 ArduinoGpio hourGpio1(A1, true);
-ArduinoGpio hourGpio2(2, true);
+ArduinoGpio hourGpio2(A2, true);
 ArduinoGpio hourGpio3(3, true);
 ArduinoGpio hourGpio4(4, true);
 
@@ -35,6 +36,16 @@ ArduinoGpio minuteIncrementGpio(12, false);
 ranetos::Timer debounceDelayMinute(systemClock);
 ranetos::DebounceGpio minuteIncrementDebounce(minuteIncrementGpio, debounceDelayMinute, 80);
 ranetos::OneShotGpio minuteIncrement(minuteIncrementDebounce);
+
+ArduinoGpio tomateStartGpio(2, false);
+ranetos::Timer debounceDelayTomateStart(systemClock);
+ranetos::DebounceGpio tomateStartDebounce(tomateStartGpio, debounceDelayTomateStart, 80);
+ranetos::OneShotGpio tomateStart(tomateStartDebounce);
+
+ranetos::Timer tTimer(systemClock);
+TomateTimer tomateTimer(tTimer, tomateStart);
+ArduinoGpio tomateGpioBreak(A3, true);
+ArduinoGpio tomateGpioActive(13, true);
 
 void setup() {  
   clockOutput.setHourGpio(&hourGpio0, 4);
@@ -60,4 +71,22 @@ void setup() {
 void loop() {
   myClock.work();
   timeAdjuster.work();
+  tomateTimer.work();
+
+  switch (tomateTimer.currentState()) {
+  case TomateTimer::State::IDLE_STATE:
+    tomateGpioBreak.setOn(false);
+    tomateGpioActive.setOn(false);
+    break;
+  case TomateTimer::State::ACTIVE_STATE:
+    tomateGpioBreak.setOn(false);
+    tomateGpioActive.setOn(true);
+    break;
+  case TomateTimer::State::BREAK_STATE:
+    tomateGpioBreak.setOn(true);
+    tomateGpioActive.setOn(false);
+    break;
+  default:
+    break;
+  }
 }
