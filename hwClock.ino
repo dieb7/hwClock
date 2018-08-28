@@ -71,22 +71,27 @@ void setup() {
 void loop() {
   myClock.work();
   timeAdjuster.work();
-  tomateTimer.work();
 
-  switch (tomateTimer.currentState()) {
-  case TomateTimer::State::IDLE_STATE:
-    tomateGpioBreak.setOn(false);
-    tomateGpioActive.setOn(false);
-    break;
-  case TomateTimer::State::ACTIVE_STATE:
-    tomateGpioBreak.setOn(false);
-    tomateGpioActive.setOn(true);
-    break;
-  case TomateTimer::State::BREAK_STATE:
-    tomateGpioBreak.setOn(true);
-    tomateGpioActive.setOn(false);
-    break;
-  default:
-    break;
+  TomateTimer::State prevTomateState = tomateTimer.currentState();
+  tomateTimer.work();
+  TomateTimer::State curTomateState = tomateTimer.currentState();
+
+  if (curTomateState != prevTomateState) {
+    switch (tomateTimer.currentState()) {
+    case TomateTimer::State::IDLE_STATE:
+      tomateGpioBreak.setOn(false);
+      tomateGpioActive.setOn(false);
+      break;
+    case TomateTimer::State::ACTIVE_STATE:
+      tomateGpioBreak.setOn(false);
+      tomateGpioActive.setOn(true);
+      break;
+    case TomateTimer::State::BREAK_STATE:
+      tomateGpioBreak.setOn(true);
+      tomateGpioActive.setOn(false);
+      break;
+    default:
+      break;
+    }
   }
 }
